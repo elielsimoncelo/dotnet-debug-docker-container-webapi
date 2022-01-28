@@ -1,4 +1,5 @@
-# imagem para execucao da aplicacao
+
+# imagem base para a execucao da aplicacao
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 
 # definir o diretorio de execucao da aplicacao
@@ -50,8 +51,10 @@ FROM base AS final
 # definir o diretorio de execucao da aplicacao
 WORKDIR /app
 
-# copiar os arquivos da pasta publish da nossa imagem do SKD para a pasta /app da imagem final
+# copiar os arquivos da pasta publish da nossa imagem do SKD para a 
+# pasta /app da imagem final
 COPY --from=publish /app/publish .
 
 # executando a aplicacao
 ENTRYPOINT ["dotnet", "DotnetDebugDockerContainerWebApi.dll"]
+
