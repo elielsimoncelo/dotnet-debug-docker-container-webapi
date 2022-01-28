@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  api:
+    container_name: mercurianos_api
+    image: images/mercurianos
+    build:
+      context: .
+      target: base
+      dockerfile: ./Dockerfile
+    ports:
+      - "7000:80/tcp"
+      - "7001:443/tcp"
+    environment:
+      - ASPNETCORE_HTTPS_PORT=7001 # definir a porta padrao de https
+      - ASPNETCORE_URLS=http://+;https://+ # definir os protocolos e portas padroes
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password # senha do certificado
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetcore.pfx # caminho do certificado
+    volumes:
+      - ~/.aspnet/https:/https:ro # diretorio do nosso certificado (somente leitura)
+      - ~/.vsdbg:/remote_debugger:rw # diretorio de debug para container, iot e etc (ler e escrever)
+    depends_on:
+      - db # depende da criacao do servico db
+  db:
+    container_name: mercurianos_db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    volumes:
+      - ~/apps/mssql/data:/var/lib/mssqlql/data
+    environment:
+      - ACCEPT_EULA=Y # aceita a licenca
+      - SA_PASSWORD=mssql1Ipw # define a senha padrao do usuario sa
